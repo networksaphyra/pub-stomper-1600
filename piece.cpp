@@ -1,26 +1,26 @@
-#include <string>
 #include <cstdint>
-#include <array>
+#include <iostream>
 
-enum class Color {White, Black};
-enum class PieceType {King, Queen, Rook, Bishop, Knight, Pawn};
+enum PieceType { KING, QUEEN, ROOK, BISHOP, KNIGHT, PAWN };
+enum PieceColor { WHITE, BLACK };
 
 class Piece {
 private:
-  PieceType type;
-  Color color;
   uint64_t bitboard;
+  PieceColor color;
+  PieceType piece_name;
+
 
 public:
-  Piece(PieceType type, Color color) : type(type), color(color), bitboard(0ULL) {}
+  Piece(uint64_t bitboard, PieceType piece_name, PieceColor color):
+  bitboard(bitboard), color(color), piece_name(piece_name) {};
 
   // Getters
-  u_int64_t get_bitboard() { return bitboard; }
-  Color get_color() { return color; }
-  PieceType get_type() { return type; }
+  bool is_occupied(int bit) { return (bitboard & (1ULL << bit)) != 0; }
+  PieceColor get_color() { return color; }
+  PieceType get_name() { return piece_name; }
 
   // Setters
-  void set_bit(int square) { bitboard |= (1ULL << square); }
-  void delete_bit(int square) { bitboard &= ~(1ULL << square); }
-  bool is_occupied(int square) { return bitboard & (1ULL << square); }
+  void set_bit(int bit) { bitboard |= (1ULL << bit); }
+  void clear_bit(int bit) { bitboard &= (1ULL << bit); }
 };
