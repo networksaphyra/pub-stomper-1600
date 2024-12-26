@@ -1,9 +1,9 @@
-enum color {
+enum COLOR {
   WHITE,
   BLACK
 };
 
-enum piece_type {
+enum PIECE_TYPE {
   PAWN,
   KNIGHT,
   BISHOP,
