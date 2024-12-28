@@ -11,3 +11,14 @@ enum PIECE_TYPE {
   QUEEN,
   KING
 };
+
+enum CASTLE_TYPE {
+  KING_SIDE,
+  QUEEN_SIDE
+};
+
+enum MOVE {
+  LEGAL,
+  ILLEGAL,
+  PSEUDO_LEGAL
+};
