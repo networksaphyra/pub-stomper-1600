@@ -28,7 +28,7 @@ private:
   std::vector<int> move_list;
 
   // Bit 1: White king side castle, Bit 2: White queen side castle, Bit 3: Black king side castle, Bit 4: Black queen side castle
-  uint8_t castling = 0b00001111;
+  uint8_t castling = 0b1111;
 
   void update_occupied() {
     uint64_t new_occupied = 0ULL;
@@ -41,29 +41,29 @@ private:
   }
 
   void setup_initial_position() {
-    pieces[COLOR::WHITE][PIECE_TYPE::PAWN].set_bitboard(0x000000000000FF00ULL);
-    pieces[COLOR::BLACK][PIECE_TYPE::PAWN].set_bitboard(0x00FF000000000000ULL);
+    pieces[COLOR::WHITE][PIECE::PAWN].set_bitboard(SECOND_RANK);
+    pieces[COLOR::BLACK][PIECE::PAWN].set_bitboard(SEVENTH_RANK);
 
-    pieces[COLOR::WHITE][PIECE_TYPE::KNIGHT].set_bit(1);
-    pieces[COLOR::WHITE][PIECE_TYPE::KNIGHT].set_bit(6);
-    pieces[COLOR::BLACK][PIECE_TYPE::KNIGHT].set_bit(57);
-    pieces[COLOR::BLACK][PIECE_TYPE::KNIGHT].set_bit(62);
+    pieces[COLOR::WHITE][PIECE::KNIGHT].set_bit(SQUARE::B1);
+    pieces[COLOR::WHITE][PIECE::KNIGHT].set_bit(SQUARE::G1);
+    pieces[COLOR::BLACK][PIECE::KNIGHT].set_bit(SQUARE::B8);
+    pieces[COLOR::BLACK][PIECE::KNIGHT].set_bit(SQUARE::G8);
 
-    pieces[COLOR::WHITE][PIECE_TYPE::BISHOP].set_bit(2);
-    pieces[COLOR::WHITE][PIECE_TYPE::BISHOP].set_bit(5);
-    pieces[COLOR::BLACK][PIECE_TYPE::BISHOP].set_bit(58);
-    pieces[COLOR::BLACK][PIECE_TYPE::BISHOP].set_bit(61);
+    pieces[COLOR::WHITE][PIECE::BISHOP].set_bit(SQUARE::C1);
+    pieces[COLOR::WHITE][PIECE::BISHOP].set_bit(SQUARE::F1);
+    pieces[COLOR::BLACK][PIECE::BISHOP].set_bit(SQUARE::C8);
+    pieces[COLOR::BLACK][PIECE::BISHOP].set_bit(SQUARE::F8);
 
-    pieces[COLOR::WHITE][PIECE_TYPE::ROOK].set_bit(0);
-    pieces[COLOR::WHITE][PIECE_TYPE::ROOK].set_bit(7);
-    pieces[COLOR::BLACK][PIECE_TYPE::ROOK].set_bit(56);
-    pieces[COLOR::BLACK][PIECE_TYPE::ROOK].set_bit(63);
+    pieces[COLOR::WHITE][PIECE::ROOK].set_bit(SQUARE::A1);
+    pieces[COLOR::WHITE][PIECE::ROOK].set_bit(SQUARE::H1);
+    pieces[COLOR::BLACK][PIECE::ROOK].set_bit(SQUARE::A8);
+    pieces[COLOR::BLACK][PIECE::ROOK].set_bit(SQUARE::H8);
 
-    pieces[COLOR::WHITE][PIECE_TYPE::QUEEN].set_bit(3);
-    pieces[COLOR::BLACK][PIECE_TYPE::QUEEN].set_bit(59);
+    pieces[COLOR::WHITE][PIECE::QUEEN].set_bit(SQUARE::D1);
+    pieces[COLOR::BLACK][PIECE::QUEEN].set_bit(SQUARE::D8);
 
-    pieces[COLOR::WHITE][PIECE_TYPE::KING].set_bit(4);
-    pieces[COLOR::BLACK][PIECE_TYPE::KING].set_bit(60);
+    pieces[COLOR::WHITE][PIECE::KING].set_bit(SQUARE::E1);
+    pieces[COLOR::BLACK][PIECE::KING].set_bit(SQUARE::E8);
   }
 
 public:
@@ -74,12 +74,13 @@ public:
   }
 
   std::array<std::array<Bitboard, 6>, 2> get_pieces() { return pieces; }
+  Bitboard get_piece(COLOR color, PIECE piece_type) { return pieces[color][piece_type]; }
   COLOR get_turn() { return turn; }
+  bool can_castle(COLOR color, CASTLE castle_type) { return (castling & (1 << (castle_type + (color == BLACK ? 2: 0)))) != 0; }
 
   void next_turn() { turn = (turn == WHITE ? BLACK: WHITE); }
   void set_reversible_moves(int moves) { reversible_moves = moves; }
-  // this might bite me later, but quick, dirty way to invalidate castling without proper checks.
-  void invalidate_castling(COLOR color, CASTLE_TYPE castle_type) { castling &= ~(1 << (castle_type + (color == BLACK ? 2: 0))); }
+  void invalidate_castling(COLOR color, CASTLE castle_type) { castling &= ~(1 << (castle_type + (color == BLACK ? 2: 0))); }
 
   void set_player_color(COLOR color) {
     player_color = color;

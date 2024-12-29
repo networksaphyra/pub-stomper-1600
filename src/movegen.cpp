@@ -2,10 +2,10 @@
 
 struct Move {
   COLOR color;
-  PIECE_TYPE piece_type;
+  PIECE piece_type;
   int from;
   int to;
-  PIECE_TYPE captured_piece;
+  PIECE captured_piece;
 };
 
 class MoveGen {
