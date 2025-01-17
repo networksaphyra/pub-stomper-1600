@@ -33,11 +33,11 @@ const uint64_t SEVENTH_RANK = 0x00FF000000000000ULL;
 
 // Using "BOARD" prefix since "FILE" is causing a naming conflict with cstdio
 enum BOARD_FILE: int {
-  FILE_A = 1, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+  FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
 };
 
 enum BOARD_RANK: int {
-  RANK_1 = 1, RANK_2, RANK_3, RANK_4, RANK_5,  RANK_6, RANK_7, RANK_8,
+  RANK_1, RANK_2, RANK_3, RANK_4, RANK_5,  RANK_6, RANK_7, RANK_8,
 };
 
 
