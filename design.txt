@@ -4,6 +4,8 @@ bitboard.cpp: Contains a helper class for working with bitboards.
 
 board.cpp: Contains a class where everything related to board state belongs.
 
+move.cpp: Contains the definition for a "move" 🤩. In chess  engines ♟️, a move is defined as a "half-move" 🤨, describing only what one colors plays 😁.
+
 movegen.cpp: Contains a class to generate all possible legal moves given a "Board" instance.
 
 constants.cpp: Contains useful constants.
