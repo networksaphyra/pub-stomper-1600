@@ -38,3 +38,11 @@ enum SQUARE {
   A7, B7, C7, D7, E7, F7, G7, H7,
   A8, B8, C8, D8, E8, F8, G8, H8
 };
+
+namespace FLAG {
+  const uint16_t QUIET_MOVE = 0;
+  const uint16_t CAPTURE = 1 << 12;
+  const uint16_t PAWN_PROMOTION = 2 << 12;
+  const uint16_t EN_PASSANT = 3 << 12;
+  const uint16_t CASTLING = 4 << 12;
+};
