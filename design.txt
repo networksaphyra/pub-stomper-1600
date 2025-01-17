@@ -1,0 +1,12 @@
+Note: This is just for me to keep track of what is going on and isn't necessary for the final project.
+
+bitboard.cpp: Contains a helper class for working with bitboards.
+
+board.cpp: Contains a class where everything related to board state belongs.
+
+movegen.cpp: Contains a class to generate all possible legal moves given a "Board" instance.
+
+constants.cpp: Contains useful constants.
+
+Origin Square: is the square occupied by a piece about to move
+Target Square: is the square occupied by the moving piece after making the move
