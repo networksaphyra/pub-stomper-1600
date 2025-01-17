@@ -34,7 +34,7 @@ private:
         {2, -1}
     }};
 
-    for (SQUARE sq = A1; sq < H8; sq = static_cast<SQUARE>(sq + 1)) {
+    for (SQUARE sq = A1; sq <= H8; sq = static_cast<SQUARE>(sq + 1)) {
       Bitboard moves;
       BOARD_FILE file = get_file(sq);
       BOARD_RANK rank = get_rank(sq);
@@ -49,7 +49,7 @@ private:
         }
       }
 
-      knight_move_table[sq] = moves;
+      knight_move_table[sq].set_bitboard(moves.get_bitboard());
     }
   }
 
