@@ -35,6 +35,8 @@ private:
 
   void update_occupied() {
     occupied.set_bitboard(0ULL);
+    color_occupied[WHITE].set_bitboard(0ULL);
+    color_occupied[BLACK].set_bitboard(0ULL);
     for (int color=0; color<2; ++color) {
       for (int piece=0; piece<6; ++piece) {
         occupied.OR(pieces[color][piece]);
