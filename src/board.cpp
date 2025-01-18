@@ -1,3 +1,4 @@
+#pragma once
 #include "bitboard.cpp"
 #include "constants.cpp"
 #include <cstdint>
@@ -19,6 +20,8 @@ Board state MUST contain the following:
 class Board {
 private:
   Bitboard occupied;
+  // color_occupied[WHITE] gives all squares occupied by white pieces
+  std::array<Bitboard, 2> color_occupied;
   std::array<std::array<Bitboard, 6>, 2> pieces;
 
   COLOR player_color, engine_color;
@@ -31,13 +34,18 @@ private:
   uint8_t castling = 0b1111;
 
   void update_occupied() {
-    uint64_t new_occupied = 0ULL;
+    occupied.set_bitboard(0ULL);
     for (int color=0; color<2; ++color) {
-      for (int piece_type=0; piece_type<6; ++piece_type) {
-        new_occupied |= pieces[color][piece_type].get_bitboard();
+      for (int piece=0; piece<6; ++piece) {
+        occupied.OR(pieces[color][piece]);
+        color_occupied[color].OR(pieces[color][piece]);
       }
     }
-    occupied.set_bitboard(new_occupied);
+  }
+
+  void set_player_color(COLOR color) {
+    player_color = color;
+    engine_color = flip_color(color);
   }
 
   void setup_initial_position() {
@@ -68,22 +76,20 @@ private:
 
 public:
   Board() {
-    turn = WHITE;
-    set_player_color(WHITE);
+    turn = COLOR::WHITE;
+    set_player_color(COLOR::WHITE);
     setup_initial_position();
   }
 
   std::array<std::array<Bitboard, 6>, 2> get_pieces() { return pieces; }
   Bitboard get_piece(COLOR color, PIECE piece_type) { return pieces[color][piece_type]; }
-  COLOR get_turn() { return turn; }
-  bool can_castle(COLOR color, CASTLE castle_type) { return (castling & (1 << (castle_type + (color == BLACK ? 2: 0)))) != 0; }
+  Bitboard get_color_occupied(COLOR color) { return color_occupied[color]; }
+  COLOR get_color() { return turn; }
+  COLOR flip_color(COLOR color) { return static_cast<COLOR>(~color); }
 
-  void next_turn() { turn = (turn == WHITE ? BLACK: WHITE); }
+  bool can_castle(COLOR color, CASTLE castle_type) { return (castling & (1ULL << (castle_type + (color == COLOR::BLACK ? 2: 0)))); }
+
+  void next_turn() { turn = flip_color(turn); }
   void set_reversible_moves(int moves) { reversible_moves = moves; }
-  void invalidate_castling(COLOR color, CASTLE castle_type) { castling &= ~(1 << (castle_type + (color == BLACK ? 2: 0))); }
-
-  void set_player_color(COLOR color) {
-    player_color = color;
-    engine_color = (color == WHITE ? BLACK: WHITE);
-  }
+  void invalidate_castling(COLOR color, CASTLE castle_type) { castling &= ~(1ULL << (castle_type + (color == COLOR::BLACK ? 2: 0))); }
 };
