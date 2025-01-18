@@ -19,7 +19,9 @@ private:
     return file >= FILE_A && file <= FILE_H && rank >= RANK_1 && rank <= RANK_8;
   }
 
-  void init_move_tables() { init_knight_move_table(); }
+  void init_move_tables() {
+    init_knight_move_table();
+  }
 
   // This feels very overengineered.
   void init_knight_move_table() {
@@ -34,10 +36,10 @@ private:
         {2, -1}
     }};
 
-    for (SQUARE sq = A1; sq <= H8; sq = static_cast<SQUARE>(sq + 1)) {
+    for (SQUARE square = A1; square <= H8; square = static_cast<SQUARE>(square + 1)) {
       Bitboard moves;
-      BOARD_FILE file = get_file(sq);
-      BOARD_RANK rank = get_rank(sq);
+      BOARD_FILE file = get_file(square);
+      BOARD_RANK rank = get_rank(square);
 
       for (const auto &[delta_file, delta_rank] : knight_deltas) {
         BOARD_FILE new_file = static_cast<BOARD_FILE>(static_cast<int>(file) + delta_file);
@@ -49,18 +51,45 @@ private:
         }
       }
 
-      knight_move_table[sq].set_bitboard(moves.get_bitboard());
+      knight_move_table[square].set_bitboard(moves.get_bitboard());
     }
   }
 
 public:
   MoveGenerator() { init_move_tables(); }
 
-  std::vector<Move> generate_legal_moves(Board &board) {
+  std::vector<Move> generate_legal_moves(const Board &board) {
     std::vector<Move> legal_moves;
     return legal_moves;
   }
 
-private:
-  std::vector<Move> generate_knight_moves(Board &board) {}
+  std::vector<Move> generate_knight_moves(Board &board) {
+    std::vector<Move> knight_moves;
+    COLOR color = board.get_color();
+    Bitboard knights = board.get_piece(color, PIECE::KNIGHT);
+
+    while (knights.get_bitboard()) {
+      SQUARE origin = static_cast<SQUARE>(knights.get_least_significant_bit());
+      Bitboard attack;
+      Bitboard friendly = board.get_color_occupied(color);
+      Bitboard enemy = board.get_color_occupied(board.flip_color(color));
+      // Attack all possible squares
+      attack.OR(knight_move_table[origin]);
+      // Invalidate any attack squares occupied by friendly pieces
+      attack.AND(friendly.GET_NOT());
+
+      while (attack.get_bitboard()) {
+        SQUARE target = static_cast<SQUARE>(attack.get_least_significant_bit());
+        if (enemy.is_occupied(target)) {
+          knight_moves.push_back(Move(origin, target, FLAG::CAPTURE));
+        } else {
+          knight_moves.push_back(Move(origin, target));
+        }
+        attack.clear_bit(target);
+      }
+      knights.clear_bit(origin);
+    }
+
+    return knight_moves;
+  }
 };
