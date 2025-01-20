@@ -85,6 +85,7 @@ public:
 
   std::array<std::array<Bitboard, 6>, 2> get_pieces() { return pieces; }
   Bitboard get_piece(COLOR color, PIECE piece_type) { return pieces[color][piece_type]; }
+  Bitboard get_occupied() { return occupied; }
   Bitboard get_color_occupied(COLOR color) { return color_occupied[color]; }
   COLOR get_color() { return turn; }
   COLOR flip_color(COLOR color) { return static_cast<COLOR>(~color); }
