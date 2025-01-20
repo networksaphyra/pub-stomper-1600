@@ -9,7 +9,7 @@ private:
   uint16_t flags;
 
 public:
-  Move(SQUARE origin, SQUARE target, uint16_t flags = FLAG::QUIET_MOVE):
+  Move(SQUARE origin, SQUARE target, uint16_t flags = FLAG::NONE):
   origin(origin),
   target(target),
   flags(flags) {}
