@@ -43,11 +43,6 @@ private:
   }
 
   void init_knight_move_table() {
-    const std::array<std::pair<int, int>, 8> knight_deltas = {{
-      {2 * NORTH, EAST}, {2 * NORTH, WEST}, {2 * SOUTH, EAST}, {2 * SOUTH, WEST},
-      {NORTH, 2 * EAST}, {NORTH, 2 * WEST}, {SOUTH, 2 * EAST}, {SOUTH, 2 * WEST}
-    }};
-
     for (SQUARE square = A1; square <= H8; square = static_cast<SQUARE>(square + 1)) {
       Bitboard moves;
       BOARD_FILE file = get_file(square);
