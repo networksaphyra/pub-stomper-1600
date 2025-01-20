@@ -2,6 +2,7 @@
 
 #pragma once
 #include <cstdint>
+#include <vector>
 
 enum COLOR: int {
   WHITE,
@@ -22,7 +23,7 @@ enum CASTLE: int {
   QUEEN_SIDE
 };
 
-enum MOVE: int {
+enum LEGALITY: int {
   LEGAL,
   ILLEGAL,
   PSEUDO_LEGAL
@@ -56,15 +57,35 @@ BOARD_FILE get_file(SQUARE sq) { return BOARD_FILE(sq % 8); }
 BOARD_RANK get_rank(SQUARE sq) { return BOARD_RANK(sq / 8); }
 SQUARE make_square(BOARD_FILE f, BOARD_RANK r) { return SQUARE(r * 8 + f); }
 
-const int NORTH = 8;
-const int SOUTH = -8;
-const int EAST = 1;
-const int WEST = -1;
+const int BOARD_NORTH = 8;
+const int BOARD_SOUTH = -8;
+const int BOARD_EAST  = 1;
+const int BOARD_WEST  = -1;
+
+const int NORTH    = -1;
+const int SOUTH  =  1;
+const int EAST =  1;
+const int WEST  = -1;
 
 namespace FLAG {
-  const uint16_t QUIET_MOVE = 0;
+  const uint16_t NONE = 0;
   const uint16_t CAPTURE = 1 << 12;
   const uint16_t PAWN_PROMOTION = 2 << 12;
   const uint16_t EN_PASSANT = 3 << 12;
   const uint16_t CASTLING = 4 << 12;
+};
+
+const std::vector<std::pair<int, int>> knight_deltas = {{
+  {2 * NORTH, EAST}, {2 * NORTH, WEST}, {2 * SOUTH, EAST}, {2 * SOUTH, WEST},
+  {NORTH, 2 * EAST}, {NORTH, 2 * WEST}, {SOUTH, 2 * EAST}, {SOUTH, 2 * WEST}
+}};
+const std::vector<std::pair<int, int>> bishop_deltas = {{
+  {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST}
+}};
+const std::vector<std::pair<int, int>> rook_deltas = {
+  {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
+};
+const std::vector<std::pair<int, int>> queen_deltas = {
+  {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST},
+  {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
 };
