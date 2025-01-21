@@ -22,6 +22,7 @@ public:
   void set_bitboard(Bitboard bb) { bitboard = bb.get_bitboard(); }
   void set_bit(int bit) { bitboard |= (1ULL << bit); }
   void clear_bit(int bit) { bitboard &= ~(1ULL << bit); }
+  void clear_all() { set_bitboard(0ULL); }
 
   void OR(uint64_t other) { bitboard |= other; }
   void OR(Bitboard other) { bitboard |= other.get_bitboard(); }
