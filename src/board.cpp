@@ -34,9 +34,9 @@ private:
   uint8_t castling = 0b1111;
 
   void update_occupied() {
-    occupied.set_bitboard(0ULL);
-    color_occupied[WHITE].set_bitboard(0ULL);
-    color_occupied[BLACK].set_bitboard(0ULL);
+    occupied.clear_all();
+    color_occupied[WHITE].clear_all();
+    color_occupied[BLACK].clear_all();
     for (int color=0; color<2; ++color) {
       for (int piece=0; piece<6; ++piece) {
         occupied.OR(pieces[color][piece]);
