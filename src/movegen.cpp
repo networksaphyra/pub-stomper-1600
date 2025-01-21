@@ -91,23 +91,16 @@ public:
     return legal_moves;
   }
 
-  std::vector<Move> generate_knight_moves(Board &board) {
-    return generate_non_sliding_moves(board, PIECE::KNIGHT);
-  }
+  std::vector<Move> generate_piece_moves(Board& board, PIECE piece) {
+    std::vector<Move> piece_moves;
+    // todo: all pawn legal moves
+    if (piece == PIECE::PAWN) {
 
-  std::vector<Move> generate_bishop_moves(Board &board) {
-    return generate_sliding_moves(board, PIECE::BISHOP);
-  }
-
-  std::vector<Move> generate_rook_moves(Board &board) {
-    return generate_sliding_moves(board, PIECE::ROOK);
-  }
-
-  std::vector<Move> generate_queen_moves(Board &board) {
-    return generate_sliding_moves(board, PIECE::QUEEN);
-  }
-
-  std::vector<Move> generate_king_moves(Board &board) {
-    return generate_non_sliding_moves(board, PIECE::KING);
+    } else if (piece == PIECE::KNIGHT || piece == PIECE::KING) {
+      piece_moves = generate_non_sliding_moves(board, piece);
+    } else {
+      piece_moves = generate_sliding_moves(board, piece);
+    }
+    return piece_moves;
   }
 };
