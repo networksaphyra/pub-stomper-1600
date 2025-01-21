@@ -3,6 +3,7 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+#include <array>
 
 enum COLOR: int {
   WHITE,
@@ -57,6 +58,10 @@ BOARD_FILE get_file(SQUARE sq) { return BOARD_FILE(sq % 8); }
 BOARD_RANK get_rank(SQUARE sq) { return BOARD_RANK(sq / 8); }
 SQUARE make_square(BOARD_FILE f, BOARD_RANK r) { return SQUARE(r * 8 + f); }
 
+bool is_in_bounds(BOARD_FILE file, BOARD_RANK rank) {
+  return file >= FILE_A && file <= FILE_H && rank >= RANK_1 && rank <= RANK_8;
+}
+
 const int BOARD_NORTH = 8;
 const int BOARD_SOUTH = -8;
 const int BOARD_EAST  = 1;
@@ -75,17 +80,29 @@ namespace FLAG {
   const uint16_t CASTLING = 4 << 12;
 };
 
-const std::vector<std::pair<int, int>> knight_deltas = {{
-  {2 * NORTH, EAST}, {2 * NORTH, WEST}, {2 * SOUTH, EAST}, {2 * SOUTH, WEST},
-  {NORTH, 2 * EAST}, {NORTH, 2 * WEST}, {SOUTH, 2 * EAST}, {SOUTH, 2 * WEST}
-}};
-const std::vector<std::pair<int, int>> bishop_deltas = {{
-  {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST}
-}};
-const std::vector<std::pair<int, int>> rook_deltas = {
-  {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
-};
-const std::vector<std::pair<int, int>> queen_deltas = {
-  {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST},
-  {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
+// Directions[PIECE::KING] returns the direction deltas for a king
+const std::array<std::vector<std::pair<int, int>>, 6> directions = {
+  {
+    {
+
+    },
+    {
+      {2 * NORTH, EAST}, {2 * NORTH, WEST}, {2 * SOUTH, EAST}, {2 * SOUTH, WEST},
+      {NORTH, 2 * EAST}, {NORTH, 2 * WEST}, {SOUTH, 2 * EAST}, {SOUTH, 2 * WEST}
+    },
+    {
+      {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST}
+    },
+    {
+      {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
+    },
+    {
+      {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST},
+      {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
+    },
+    {
+      {NORTH, EAST}, {NORTH, WEST}, {SOUTH, EAST}, {SOUTH, WEST},
+      {NORTH, 0}, {SOUTH, 0}, {0, EAST}, {0, WEST}
+    }
+  },
 };
