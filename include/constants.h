@@ -3,8 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <array>
-
-class Bitboard;
+#include "bitboard.h"
 
 enum COLOR: int {
   WHITE,
@@ -51,7 +50,8 @@ enum SQUARE: int {
   A5, B5, C5, D5, E5, F5, G5, H5,
   A6, B6, C6, D6, E6, F6, G6, H6,
   A7, B7, C7, D7, E7, F7, G7, H7,
-  A8, B8, C8, D8, E8, F8, G8, H8
+  A8, B8, C8, D8, E8, F8, G8, H8,
+  NO_SQUARE = -1
 };
 
 BOARD_FILE get_file(SQUARE square);
@@ -73,16 +73,24 @@ const int WEST  = -1;
 
 namespace FLAG {
   const uint16_t NONE = 0;
-  const uint16_t CAPTURE = 1 << 12;
-  const uint16_t PAWN_PROMOTION = 2 << 12;
-  const uint16_t EN_PASSANT = 3 << 12;
-  const uint16_t CASTLING = 4 << 12;
-};
+  const uint16_t CAPTURE = 1 << 0;
+  const uint16_t DOUBLE_PAWN_PUSH = 1 << 1;
+  const uint16_t KING_CASTLE = 1 << 2;
+  const uint16_t QUEEN_CASTLE = 1 << 3;
+  const uint16_t EN_PASSANT = 1 << 4;
+  const uint16_t PAWN_PROMOTION = 1 << 5;
+  const uint16_t PROMOTION_QUEEN = 1 << 6;
+  const uint16_t PROMOTION_ROOK = 1 << 7;
+  const uint16_t PROMOTION_BISHOP = 1 << 8;
+  const uint16_t PROMOTION_KNIGHT = 1 << 9;
+  const uint16_t CASTLING = KING_CASTLE | QUEEN_CASTLE;
+}
 
 const std::array<std::vector<std::pair<int, int>>, 6> directions = {
   {
     {
-
+      // multiply y delta by negative one if color is black
+      {NORTH, 0}, {NORTH, EAST}, {NORTH, WEST}
     },
     {
       {2 * NORTH, EAST}, {2 * NORTH, WEST}, {2 * SOUTH, EAST}, {2 * SOUTH, WEST},

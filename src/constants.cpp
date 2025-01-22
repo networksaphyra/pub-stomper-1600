@@ -1,5 +1,3 @@
-#pragma once
-
 #include "../include/constants.h"
 #include "../include/bitboard.h"
 
