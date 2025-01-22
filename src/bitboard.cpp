@@ -11,12 +11,19 @@ uint64_t Bitboard::get_bitboard() {
 }
 
 int Bitboard::get_least_significant_bit() {
-  for (int i=0; i<64; ++i) {
-    if (is_occupied(i)) {
-      return i;
-    }
-  }
-  return -1;
+  if (bitboard == 0) return -1;
+  return __builtin_ctzll(bitboard);
+}
+
+int Bitboard::pop_least_significant_bit() {
+  if (bitboard == 0) return -1;
+  int lsb = __builtin_ctzll(bitboard);
+  bitboard &= (bitboard - 1);  // Clear LSB
+  return lsb;
+}
+
+int Bitboard::count_bits() {
+  return __builtin_popcountll(bitboard);
 }
 
 void Bitboard::set_bitboard(uint64_t bb) {

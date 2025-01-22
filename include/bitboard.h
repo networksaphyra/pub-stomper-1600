@@ -1,4 +1,5 @@
 #pragma once
+
 #include <cstdint>
 
 class Bitboard {
@@ -12,6 +13,8 @@ public:
 
   uint64_t get_bitboard();
   int get_least_significant_bit();
+  int pop_least_significant_bit();
+  int count_bits();
 
   void set_bitboard(uint64_t bb);
   void set_bitboard(Bitboard bb);
