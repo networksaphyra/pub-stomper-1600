@@ -23,7 +23,8 @@ public:
   bool can_castle(COLOR color, CASTLE castle_type);
   void next_turn();
   void set_turn(COLOR color);
-  void set_reversible_moves(int moves);
+  void increment_reversible_moves();
+  void reset_reversible_moves();
   void invalidate_castling(COLOR color, CASTLE castle_type);
 
   SQUARE get_en_passant_square() const;
