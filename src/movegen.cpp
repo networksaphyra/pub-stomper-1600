@@ -71,10 +71,7 @@ bool MoveGenerator::is_check(Board& board, COLOR color) {
 }
 
 bool MoveGenerator::is_move_legal(Board& board, const Move& move) {
-  // Create a copy of the board to test the move
   Board test_board = board;
-
-  // Make the move on the test board
   test_board.make_move(move);
 
   // After making the move, we check if our king is in check
@@ -91,17 +88,14 @@ std::vector<Move> MoveGenerator::generate_castling_moves(Board& board) {
   COLOR color = board.get_color();
   BOARD_RANK rank = (color == COLOR::WHITE) ? RANK_1 : RANK_8;
 
-  // Check if king is in check
   if (is_check(board, color)) {
     return moves;
   }
 
-  // Kingside castling
   if (board.can_castle(color, CASTLE::KING_SIDE)) {
     if (!board.get_occupied().is_occupied(make_square(FILE_F, rank)) &&
         !board.get_occupied().is_occupied(make_square(FILE_G, rank))) {
 
-      // Check if squares are attacked
       bool safe = true;
       for (auto file : {FILE_E, FILE_F, FILE_G}) {
         if (is_square_attacked(board, make_square(file, rank), board.flip_color(color))) {
@@ -120,13 +114,11 @@ std::vector<Move> MoveGenerator::generate_castling_moves(Board& board) {
     }
   }
 
-  // Queenside castling
   if (board.can_castle(color, CASTLE::QUEEN_SIDE)) {
     if (!board.get_occupied().is_occupied(make_square(FILE_D, rank)) &&
         !board.get_occupied().is_occupied(make_square(FILE_C, rank)) &&
         !board.get_occupied().is_occupied(make_square(FILE_B, rank))) {
 
-      // Check if squares are attacked
       bool safe = true;
       for (auto file : {FILE_E, FILE_D, FILE_C}) {
         if (is_square_attacked(board, make_square(file, rank), board.flip_color(color))) {
@@ -165,8 +157,7 @@ std::vector<Move> MoveGenerator::generate_sliding_moves(Board &board, PIECE piec
       Bitboard blockers = ray.GET_AND(occupied);
 
       if (blockers.get_bitboard()) {
-        SQUARE blocker =
-            static_cast<SQUARE>(blockers.get_least_significant_bit());
+        SQUARE blocker = static_cast<SQUARE>(blockers.get_least_significant_bit());
         ray.XOR(get_ray_attacks(blocker, delta_rank, delta_file));
       }
       moves_bb.AND(ray);
@@ -219,7 +210,7 @@ std::vector<Move> MoveGenerator::generate_pawn_moves(Board &board) {
 
   int direction = (color == COLOR::WHITE) ? 1 : -1;
   BOARD_RANK starting_rank = (color == COLOR::WHITE) ? RANK_2 : RANK_7;
-  BOARD_RANK promotion_rank = (color == COLOR::WHITE) ? RANK_7 : RANK_2;
+  BOARD_RANK promotion_rank = (color == COLOR::WHITE) ? RANK_8 : RANK_1;
   BOARD_RANK en_passant_rank = (color == COLOR::WHITE) ? RANK_5 : RANK_4;
 
   while (pawns.get_bitboard()) {

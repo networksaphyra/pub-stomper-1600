@@ -12,8 +12,15 @@ public:
 
   bool is_capture();
   bool is_promotion();
+  bool is_promotion_knight();
+  bool is_promotion_bishop();
+  bool is_promotion_rook();
+  bool is_promotion_queen();
+  bool is_double_pawn_push();
   bool is_en_passant();
   bool is_castling();
+  bool is_king_side_castling();
+  bool is_queen_side_castling();
 
 private:
   SQUARE origin;
