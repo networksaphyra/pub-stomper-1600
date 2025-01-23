@@ -16,4 +16,5 @@ private:
   void init_bishop_move_table();
   void init_rook_move_table();
   void init_queen_move_table();
+  void init_king_move_table();
 };
