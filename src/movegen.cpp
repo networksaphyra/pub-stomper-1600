@@ -4,6 +4,7 @@ bool MoveGenerator::is_square_attacked(Board& board, SQUARE square, COLOR attack
   COLOR original_turn = board.get_color();
   board.set_turn(attacker_color);
 
+  bool is_attacked = false;
   auto is_attacking = [square](Move move) {
     return move.get_target() == square;
   };
@@ -11,30 +12,32 @@ bool MoveGenerator::is_square_attacked(Board& board, SQUARE square, COLOR attack
   for (PIECE piece = PIECE::KNIGHT; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
     std::vector<Move> piece_moves = generate_piece_moves(board, piece);
     if (std::any_of(piece_moves.begin(), piece_moves.end(), is_attacking)) {
-      return true;
+      is_attacked = true;
+      break;
+    }
+  }
+
+  if (!is_attacked) {
+    Bitboard pawns = board.get_piece(attacker_color, PIECE::PAWN);
+    int direction = (attacker_color == COLOR::WHITE) ? 1 : -1;
+    BOARD_FILE file = get_file(square);
+
+    if (file > FILE_A) {
+      SQUARE attack_source = static_cast<SQUARE>(square - direction * 8 - 1);
+      if (attack_source >= 0 && attack_source < 64 && pawns.is_occupied(attack_source)) {
+        is_attacked = true;
+      }
+    }
+    if (file < FILE_H) {
+      SQUARE attack_source = static_cast<SQUARE>(square - direction * 8 + 1);
+      if (attack_source >= 0 && attack_source < 64 && pawns.is_occupied(attack_source)) {
+        is_attacked = true;
+      }
     }
   }
 
   board.set_turn(original_turn);
-
-  Bitboard pawns = board.get_piece(attacker_color, PIECE::PAWN);
-  int direction = (attacker_color == COLOR::WHITE) ? 1 : -1;
-  BOARD_FILE file = get_file(square);
-
-  if (file > FILE_A) {
-    SQUARE attack_source = static_cast<SQUARE>(square - direction * 8 - 1);
-    if (attack_source >= 0 && attack_source < 64 && pawns.is_occupied(attack_source)) {
-      return true;
-    }
-  }
-  if (file < FILE_H) {
-    SQUARE attack_source = static_cast<SQUARE>(square - direction * 8 + 1);
-    if (attack_source >= 0 && attack_source < 64 && pawns.is_occupied(attack_source)) {
-      return true;
-    }
-  }
-
-  return false;
+  return is_attacked;
 }
 
 bool MoveGenerator::is_check(Board& board, COLOR color) {
