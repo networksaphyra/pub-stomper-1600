@@ -1,5 +1,3 @@
-#pragma once
-
 #include "../include/movegen.h"
 
 bool MoveGenerator::is_square_attacked(Board& board, SQUARE square, COLOR attacker_color) {
@@ -246,9 +244,18 @@ std::vector<Move> MoveGenerator::generate_legal_moves(Board& board) {
   std::vector<Move> legal_moves;
   std::vector<Move> candidate_moves;
 
-  for (int piece = PIECE::PAWN; piece <= PIECE::KING; ++piece) {
-    std::vector<Move> piece_moves = generate_piece_moves(board, static_cast<PIECE>(piece));
+  for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
+    std::vector<Move> piece_moves = generate_piece_moves(board, piece);
     candidate_moves.insert(candidate_moves.end(), piece_moves.begin(), piece_moves.end());
+  }
+
+  if (
+    board.can_castle(board.get_color(), CASTLE::KING_SIDE) ||
+    board.can_castle(board.get_color(), CASTLE::QUEEN_SIDE)
+  ) {
+    for (auto& castling_move: generate_castling_moves(board)) {
+      candidate_moves.push_back(castling_move);
+    }
   }
 
   for (const auto& move : candidate_moves) {
