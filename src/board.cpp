@@ -4,8 +4,6 @@ Board::Board() {
   turn = COLOR::WHITE;
   set_player_color(COLOR::WHITE);
   setup_initial_position();
-  reset_reversible_moves();
-  clear_en_passant_square();
 }
 
 void Board::update_occupied() {
