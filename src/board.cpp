@@ -160,18 +160,11 @@ void Board::make_move(Move move) {
     BOARD_FILE rook_target_file = (move.is_king_side_castling()) ? FILE_F : FILE_D;
     BOARD_RANK rank = (moving_color == COLOR::WHITE) ? RANK_1 : RANK_8;
 
-    BOARD_FILE king_target_file = (move.is_king_side_castling()) ? FILE_G : FILE_C;
-
     SQUARE rook_origin = make_square(rook_origin_file, rank);
     SQUARE rook_target = make_square(rook_target_file, rank);
 
     pieces[moving_color][PIECE::ROOK].clear_bit(rook_origin);
     pieces[moving_color][PIECE::ROOK].set_bit(rook_target);
-
-    SQUARE king_target = make_square(king_target_file, rank);
-
-    pieces[moving_color][PIECE::KING].clear_all();
-    pieces[moving_color][PIECE::KING].set_bit(king_target);
 
     invalidate_castling(moving_color, CASTLE::KING_SIDE);
     invalidate_castling(moving_color, CASTLE::QUEEN_SIDE);
