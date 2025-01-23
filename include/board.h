@@ -39,10 +39,10 @@ private:
   std::array<std::array<Bitboard, 6>, 2> pieces;
   COLOR player_color, engine_color;
   COLOR turn;
-  int reversible_moves;
+  int reversible_moves = 0;
   std::vector<Move> move_list;
   uint8_t castling = 0b1111;
-  SQUARE en_passant_square;
+  SQUARE en_passant_square = SQUARE::NO_SQUARE;
 
   void update_occupied();
   void set_player_color(COLOR color);
