@@ -61,15 +61,10 @@ SQUARE make_square(BOARD_FILE file, BOARD_RANK rank);
 bool is_in_bounds(BOARD_FILE file, BOARD_RANK rank);
 Bitboard get_ray_attacks(SQUARE square, int delta_rank, int delta_file);
 
-const int BOARD_NORTH = 8;
-const int BOARD_SOUTH = -8;
-const int BOARD_EAST  = 1;
-const int BOARD_WEST  = -1;
-
-const int NORTH    = -1;
-const int SOUTH  =  1;
-const int EAST =  1;
-const int WEST  = -1;
+const int NORTH = -1;
+const int SOUTH = 1;
+const int EAST = 1;
+const int WEST = -1;
 
 namespace FLAG {
   const uint16_t NONE = 0;
@@ -89,8 +84,7 @@ namespace FLAG {
 const std::array<std::vector<std::pair<int, int>>, 6> directions = {
   {
     {
-      // multiply y delta by negative one if color is black
-      {NORTH, 0}, {NORTH, EAST}, {NORTH, WEST}
+      // no pawn moves since they vary on color
     },
     {
       {2 * NORTH, EAST}, {2 * NORTH, WEST}, {2 * SOUTH, EAST}, {2 * SOUTH, WEST},
