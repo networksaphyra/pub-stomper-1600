@@ -17,8 +17,8 @@ int Bitboard::get_least_significant_bit() {
 
 int Bitboard::pop_least_significant_bit() {
   if (bitboard == 0) return -1;
-  int lsb = __builtin_ctzll(bitboard);
-  bitboard &= (bitboard - 1);  // Clear LSB
+  int lsb = get_least_significant_bit();
+  bitboard &= (bitboard - 1);
   return lsb;
 }
 
