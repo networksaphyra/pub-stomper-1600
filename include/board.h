@@ -41,7 +41,7 @@ private:
   COLOR turn;
   int reversible_moves;
   std::vector<Move> move_list;
-  uint8_t castling;
+  uint8_t castling = 0b1111;
   SQUARE en_passant_square;
 
   void update_occupied();

@@ -3,39 +3,26 @@
 #include "../include/movegen.h"
 
 bool MoveGenerator::is_square_attacked(Board& board, SQUARE square, COLOR attacker_color) {
-  // Save current board state
   COLOR original_turn = board.get_color();
   board.set_turn(attacker_color);
 
-  // Check sliding piece attacks (Bishop, Rook, Queen)
-  std::vector<Move> bishop_moves = generate_sliding_moves(board, PIECE::BISHOP);
-  std::vector<Move> rook_moves = generate_sliding_moves(board, PIECE::ROOK);
-  std::vector<Move> queen_moves = generate_sliding_moves(board, PIECE::QUEEN);
-
-  // Check knight attacks
-  std::vector<Move> knight_moves = generate_non_sliding_moves(board, PIECE::KNIGHT);
-
-  // Restore original board state
-  board.set_turn(original_turn);
-
-  // Check if any of the generated moves target our square
   auto is_attacking = [square](Move move) {
     return move.get_target() == square;
   };
 
-  if (std::any_of(bishop_moves.begin(), bishop_moves.end(), is_attacking) ||
-      std::any_of(rook_moves.begin(), rook_moves.end(), is_attacking) ||
-      std::any_of(queen_moves.begin(), queen_moves.end(), is_attacking) ||
-      std::any_of(knight_moves.begin(), knight_moves.end(), is_attacking)) {
-    return true;
+  for (PIECE piece = PIECE::KNIGHT; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
+    std::vector<Move> piece_moves = generate_piece_moves(board, piece);
+    if (std::any_of(piece_moves.begin(), piece_moves.end(), is_attacking)) {
+      return true;
+    }
   }
 
-  // Check pawn attacks (can't use normal move generation as pawns attack differently)
+  board.set_turn(original_turn);
+
   Bitboard pawns = board.get_piece(attacker_color, PIECE::PAWN);
   int direction = (attacker_color == COLOR::WHITE) ? 1 : -1;
   BOARD_FILE file = get_file(square);
 
-  // Check diagonal squares that pawns could attack from
   if (file > FILE_A) {
     SQUARE attack_source = static_cast<SQUARE>(square - direction * 8 - 1);
     if (attack_source >= 0 && attack_source < 64 && pawns.is_occupied(attack_source)) {
@@ -45,17 +32,6 @@ bool MoveGenerator::is_square_attacked(Board& board, SQUARE square, COLOR attack
   if (file < FILE_H) {
     SQUARE attack_source = static_cast<SQUARE>(square - direction * 8 + 1);
     if (attack_source >= 0 && attack_source < 64 && pawns.is_occupied(attack_source)) {
-      return true;
-    }
-  }
-
-  // Check king attacks (one square in any direction)
-  Bitboard king = board.get_piece(attacker_color, PIECE::KING);
-  SQUARE king_square = static_cast<SQUARE>(king.get_least_significant_bit());
-  if (king_square != -1) {
-    int file_diff = abs(static_cast<int>(get_file(square)) - static_cast<int>(get_file(king_square)));
-    int rank_diff = abs(static_cast<int>(get_rank(square)) - static_cast<int>(get_rank(king_square)));
-    if (file_diff <= 1 && rank_diff <= 1) {
       return true;
     }
   }
@@ -73,13 +49,7 @@ bool MoveGenerator::is_check(Board& board, COLOR color) {
 bool MoveGenerator::is_move_legal(Board& board, const Move& move) {
   Board test_board = board;
   test_board.make_move(move);
-
-  // After making the move, we check if our king is in check
-  // Note: board.get_color() gives us the color BEFORE the move
-  // So we need to check if the king of that color is safe AFTER the move
   COLOR moving_color = board.get_color();
-
-  // If we're in check after our move, it's not legal
   return !is_check(test_board, moving_color);
 }
 
@@ -229,7 +199,6 @@ std::vector<Move> MoveGenerator::generate_pawn_moves(Board &board) {
       } else {
         pawn_moves.emplace_back(origin, single_push, FLAG::NONE);
 
-        // Double push from starting rank
         if (origin_rank == starting_rank) {
           SQUARE double_push = static_cast<SQUARE>(origin + (direction * 16));
           if (!occupied.is_occupied(double_push)) {
