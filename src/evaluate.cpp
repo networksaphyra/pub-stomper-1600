@@ -1,13 +1,13 @@
 #include "../include/evaluate.h"
 #include <iostream>
 
-int Evaluate::get_piece_value(COLOR color, PIECE piece) {
+int Evaluate::get_piece_value(COLOR color, PIECE piece, Board& board) {
   if (piece == PIECE::NO_PIECE) return 0;
-  return PIECE_VALUE[piece] * color == COLOR::WHITE ? 1 : -1;
+  return board.get_piece(color, piece).count_bits() * PIECE_VALUE[piece] * (color == COLOR::WHITE ? 1 : -1);
 };
 
 // for black, the square at a8 should be equivalent to a1
-// and the value of the square should be reversed
+// and the value of the square should be reverse
 
 int Evaluate::get_piece_square_value(COLOR color, PIECE piece, SQUARE square) {
   SQUARE table_square = color == COLOR::WHITE ? static_cast<SQUARE>(63 - square) : square;
@@ -24,16 +24,8 @@ int Evaluate::evaluate(Board& board) {
       Bitboard piece_bb = board.get_piece(color, piece);
       while (piece_bb.count_bits()) {
         SQUARE square = static_cast<SQUARE>(piece_bb.pop_least_significant_bit());
-        int piece_value = get_piece_value(color, piece);
+        int piece_value = get_piece_value(color, piece, board);
         int square_value = get_piece_square_value(color, piece, square);
-
-        // std::cout
-        // << "Piece: " << piece
-        // << " Color: " << color
-        // << " Square: " << square
-        // << " Piece Value: " << piece_value
-        // << " Square Value: " << square_value
-        // << "\n";
 
         eval += piece_value + square_value;
       }

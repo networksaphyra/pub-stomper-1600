@@ -8,7 +8,7 @@
 #include "board.h"
 
 class Evaluate {
-  private:
+private:
   const std::array<int, 6> PIECE_VALUE {
     100,
     310,
@@ -93,8 +93,8 @@ class Evaluate {
     return PIECE_SQUARE_TABLE[piece][square];
   }
 
-  public:
-  int get_piece_value(COLOR color, PIECE piece);
+public:
+  int get_piece_value(COLOR color, PIECE piece, Board& board);
   int get_piece_square_value(COLOR color, PIECE piece, SQUARE square);
   int evaluate(Board& board);
 };
