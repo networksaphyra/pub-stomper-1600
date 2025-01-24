@@ -1,8 +1,8 @@
 #include "../include/evaluate.h"
 
-int Evaluate::get_piece_value(PIECE piece) {
+int Evaluate::get_piece_value(COLOR color, PIECE piece) {
   if (piece == PIECE::NO_PIECE) return 0;
-  return PIECE_VALUE[piece];
+  return PIECE_VALUE[piece] * (color == COLOR::WHITE ? 1 : -1);
 };
 
 // for black, the square at a8 should be equivalent to a1
@@ -28,6 +28,7 @@ int Evaluate::evaluate(Board& board) {
       Bitboard piece_bb = board.get_piece(color, piece);
       while (piece_bb.count_bits()) {
         SQUARE square = static_cast<SQUARE>(piece_bb.pop_least_significant_bit());
+        eval += get_piece_value(color, piece);
         eval += get_piece_square_value(color, piece, square);
       }
     }

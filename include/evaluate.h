@@ -94,7 +94,7 @@ class Evaluate {
   }
 
   public:
-  int get_piece_value(PIECE piece);
+  int get_piece_value(COLOR color, PIECE piece);
   int get_piece_square_value(COLOR color, PIECE piece, SQUARE square);
   int evaluate(Board& board);
 };
