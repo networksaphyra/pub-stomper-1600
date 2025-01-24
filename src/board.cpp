@@ -1,6 +1,7 @@
 #include "../include/board.h"
 #include <sys/types.h>
 #include <utility>
+#include <iostream>
 
 Board::Board() {
   turn = COLOR::WHITE;
@@ -13,8 +14,8 @@ void Board::update_occupied() {
   color_occupied[WHITE].clear_all();
   color_occupied[BLACK].clear_all();
 
-  for (int color = 0; color < 2; ++color) {
-    for (int piece = 0; piece < 6; ++piece) {
+  for (COLOR color = COLOR::WHITE; color <= COLOR::BLACK; color = static_cast<COLOR>(color + 1)) {
+    for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
       occupied.OR(pieces[color][piece]);
       color_occupied[color].OR(pieces[color][piece]);
     }
@@ -50,6 +51,8 @@ void Board::setup_initial_position() {
 
   pieces[COLOR::WHITE][PIECE::KING].set_bit(SQUARE::E1);
   pieces[COLOR::BLACK][PIECE::KING].set_bit(SQUARE::E8);
+
+  update_occupied();
 }
 
 Bitboard Board::get_piece(COLOR color, PIECE piece_type) {
@@ -57,7 +60,7 @@ Bitboard Board::get_piece(COLOR color, PIECE piece_type) {
 }
 
 std::pair<COLOR, PIECE> Board::get_piece_at(SQUARE square) {
-  for (COLOR color = COLOR::BLACK; color <= COLOR::WHITE; color = static_cast<COLOR>(color + 1)) {
+  for (COLOR color = COLOR::WHITE; color <= COLOR::BLACK; color = static_cast<COLOR>(color + 1)) {
     for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
       if (get_piece(color, piece).is_occupied(square)) {
         return std::make_pair(color, piece);
@@ -88,7 +91,7 @@ COLOR Board::get_color() { return turn; }
 
 std::vector<Move> Board::get_move_list() { return move_list; }
 
-COLOR Board::flip_color(COLOR color) { return static_cast<COLOR>(~color); }
+COLOR Board::flip_color(COLOR color) { return turn == COLOR::WHITE ? COLOR::BLACK : COLOR::WHITE; }
 
 bool Board::can_castle(COLOR color, CASTLE castle_type) {
   return (castling & (1ULL << (castle_type + (color == COLOR::BLACK ? 2 : 0))));
@@ -124,10 +127,13 @@ void Board::make_move(Move move) {
   SQUARE target = move.get_target();
   uint16_t flags = move.get_flags();
 
+  std::cout << "We are at: " << origin << " and we want to go at: " << target << "\n";
+  std::cout << "And moving color is: " << moving_color << "\n";
+
   PIECE moving_piece;
-  for (int piece = PIECE::PAWN; piece <= PIECE::KING; ++piece) {
+  for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
     if (pieces[moving_color][piece].is_occupied(origin)) {
-      moving_piece = static_cast<PIECE>(piece);
+      moving_piece = piece;
       break;
     }
   }
@@ -148,7 +154,7 @@ void Board::make_move(Move move) {
       capture_square = static_cast<SQUARE>(target - (moving_color == COLOR::WHITE ? 8 : -8));
     }
 
-    for (int piece = PIECE::PAWN; piece <= PIECE::KING; ++piece) {
+    for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
       if (pieces[enemy_color][piece].is_occupied(capture_square)) {
         pieces[enemy_color][piece].clear_bit(capture_square);
         break;
