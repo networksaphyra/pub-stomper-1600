@@ -138,8 +138,11 @@ std::vector<Move> MoveGenerator::generate_sliding_moves(Board &board, PIECE piec
 
     while (moves_bb.get_bitboard()) {
       SQUARE target = static_cast<SQUARE>(moves_bb.get_least_significant_bit());
+
       moves.push_back(
-        Move(origin, target, enemy.is_occupied(target) ? FLAG::CAPTURE : FLAG::NONE)
+        Move(origin, target,
+          enemy.is_occupied(target) ? FLAG::CAPTURE : FLAG::NONE,
+          enemy.is_occupied(target) ? board.get_piece_at(target): no_piece)
       );
       moves_bb.clear_bit(target);
     }
@@ -163,7 +166,9 @@ std::vector<Move> MoveGenerator::generate_non_sliding_moves(Board &board, PIECE 
     while (attack.get_bitboard()) {
       SQUARE target = static_cast<SQUARE>(attack.get_least_significant_bit());
       moves.push_back(
-        Move(origin, target, enemy.is_occupied(target) ? FLAG::CAPTURE : FLAG::NONE)
+        Move(origin, target,
+          enemy.is_occupied(target) ? FLAG::CAPTURE : FLAG::NONE,
+          enemy.is_occupied(target) ? board.get_piece_at(target) : no_piece)
       );
       attack.clear_bit(target);
     }

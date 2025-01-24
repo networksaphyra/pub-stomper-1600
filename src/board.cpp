@@ -1,4 +1,6 @@
 #include "../include/board.h"
+#include <sys/types.h>
+#include <utility>
 
 Board::Board() {
   turn = COLOR::WHITE;
@@ -50,10 +52,30 @@ void Board::setup_initial_position() {
   pieces[COLOR::BLACK][PIECE::KING].set_bit(SQUARE::E8);
 }
 
-std::array<std::array<Bitboard, 6>, 2> Board::get_pieces() { return pieces; }
-
 Bitboard Board::get_piece(COLOR color, PIECE piece_type) {
   return pieces[color][piece_type];
+}
+
+std::pair<COLOR, PIECE> Board::get_piece_at(SQUARE square) {
+  for (COLOR color = COLOR::BLACK; color <= COLOR::WHITE; color = static_cast<COLOR>(color + 1)) {
+    for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
+      if (get_piece(color, piece).is_occupied(square)) {
+        return std::make_pair(color, piece);
+      }
+    }
+  }
+  return std::make_pair(NO_COLOR, NO_PIECE);
+}
+
+std::pair<COLOR, PIECE> Board::get_piece_at(BOARD_FILE file, BOARD_RANK rank) {
+  for (COLOR color = COLOR::BLACK; color <= COLOR::WHITE; color = static_cast<COLOR>(color + 1)) {
+    for (PIECE piece = PIECE::PAWN; piece <= PIECE::KING; piece = static_cast<PIECE>(piece + 1)) {
+      if (get_piece(color, piece).is_occupied(make_square(file, rank))) {
+        return std::make_pair(color, piece);
+      }
+    }
+  }
+  return std::make_pair(NO_COLOR, NO_PIECE);
 }
 
 Bitboard Board::get_occupied() { return occupied; }

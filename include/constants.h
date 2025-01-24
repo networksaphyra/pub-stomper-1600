@@ -1,13 +1,15 @@
 #pragma once
 
 #include <cstdint>
+#include <utility>
 #include <vector>
 #include <array>
 #include "bitboard.h"
 
 enum COLOR: int {
   WHITE,
-  BLACK
+  BLACK,
+  NO_COLOR = -1
 };
 
 enum PIECE: int {
@@ -16,8 +18,11 @@ enum PIECE: int {
   BISHOP,
   ROOK,
   QUEEN,
-  KING
+  KING,
+  NO_PIECE = -1
 };
+
+const std::pair<COLOR, PIECE> no_piece = std::make_pair(NO_COLOR, NO_PIECE);
 
 enum CASTLE: int {
   KING_SIDE,

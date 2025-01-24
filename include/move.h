@@ -5,7 +5,7 @@
 
 class Move {
 public:
-  Move(SQUARE origin, SQUARE target, uint16_t flags = FLAG::NONE);
+  Move(SQUARE origin, SQUARE target, uint16_t flags = FLAG::NONE, std::pair<COLOR, PIECE> captured_pice = no_piece);
   SQUARE get_origin();
   SQUARE get_target();
   uint16_t get_flags();
@@ -26,4 +26,5 @@ private:
   SQUARE origin;
   SQUARE target;
   uint16_t flags;
+  std::pair<COLOR, PIECE> captured_piece = no_piece;
 };

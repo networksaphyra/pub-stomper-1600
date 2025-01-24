@@ -10,8 +10,9 @@
 class Board {
 public:
   Board();
-  std::array<std::array<Bitboard, 6>, 2> get_pieces();
   Bitboard get_piece(COLOR color, PIECE piece_type);
+  std::pair<COLOR, PIECE> get_piece_at(SQUARE square);
+  std::pair<COLOR, PIECE> get_piece_at(BOARD_FILE file, BOARD_RANK rank);
 
   Bitboard get_occupied();
   Bitboard get_color_occupied(COLOR color);
