@@ -1,9 +1,10 @@
 #include "../include/move.h"
 
-Move::Move(SQUARE origin, SQUARE target, uint16_t flags):
+Move::Move(SQUARE origin, SQUARE target, uint16_t flags, std::pair<COLOR, PIECE> captured_piece):
   origin(origin),
   target(target),
-  flags(flags) {}
+  flags(flags),
+  captured_piece(captured_piece) {}
 
 SQUARE Move::get_origin() { return origin; }
 
